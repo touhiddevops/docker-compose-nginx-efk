@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+ elasticsearch:
+  image: elasticsearch:8.7.1
+  container_name: elasticsearch
+  environment:
+   - discovery.type=single-node 
+  volumes: 
+   - ./esdata/data:/usr/share/elasticsearch/data
+   
+   - ./esdata/config:/usr/share/elasticsearch/config
+
+  network_mode: host
+  restart: unless-stopped
+ 
+ kibana:
+  image: kibana:8.7.1
+  container_name: Kibana
+  depends_on:
+   - elasticsearch
+  environment: # Defined host configuration
+   - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+  volumes: 
+   - ./kibanadata/data:/usr/share/kibana/data
+   - ./kibanadata/config:/usr/share/kibana/config
+  network_mode: host
+  restart: unless-stopped
+
